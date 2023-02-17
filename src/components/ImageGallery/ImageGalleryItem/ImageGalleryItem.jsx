@@ -32,31 +32,3 @@ ImageGalleryItem.propTypes = {
 };
 
 export default ImageGalleryItem;
-
-// class ImageGalleryItem extends Component {
-//   state = {
-//     openModal: false,
-//   };
-
-//   openModal = () => {
-//     this.setState({ openModal: true });
-//   };
-
-//   closeModal = () => {
-//     this.setState({ openModal: false });
-//   };
-
-//   render() {
-//     const { description, preview, original } = this.props;
-//     const { openModal } = this.state;
-
-//     return (
-//       <Item>
-//         <Image src={preview} alt={description} onClick={this.openModal} />
-//         {openModal && (
-//           <Modal onClose={this.closeModal} alt={description} image={original} />
-//         )}
-//       </Item>
-//     );
-//   }
-// }

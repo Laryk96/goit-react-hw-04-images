@@ -36,33 +36,3 @@ Modal.propTypes = {
 };
 
 export default Modal;
-
-// class Modal extends Component {
-//   componentDidMount() {
-//     window.addEventListener('keydown', this.handleKeyDown);
-//   }
-
-//   componentWillUnmount() {
-//     window.removeEventListener('keydown', this.handleKeyDown);
-//   }
-
-//   handleKeyDown = e => {
-//     if (e.code === 'Escape') {
-//       this.props.onClose();
-//     }
-//   };
-
-//   render() {
-//     const { onClose, image, alt } = this.props;
-//     const portal = document.getElementById('modal');
-
-//     return ReactDOM.createPortal(
-//       <Backdrop onClick={onClose}>
-//         <ModalBody>
-//           <img src={image} alt={alt} />
-//         </ModalBody>
-//       </Backdrop>,
-//       portal
-//     );
-//   }
-// }
