@@ -1,6 +1,6 @@
-import { Component } from 'react';
+import { getImages } from 'components/services/FetchAPI';
+import { useEffect, useState } from 'react';
 
-import * as API from 'components/services/FetchAPI.js';
 import Button from '../Button';
 import Loader from '../helpers/Loader';
 import { NotificationContainer, notifyWarning } from '../helpers/notification';
@@ -9,78 +9,81 @@ import Searchbar from '../Searchbar';
 import Title from '../Title';
 import { Container } from './App.styled';
 
-class App extends Component {
-  state = {
-    items: [],
-    query: '',
-    page: 1,
-    status: 'pending',
-  };
+const App = () => {
+  const [images, setImages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [status, setStatus] = useState('pending');
 
-  async componentDidUpdate(_, prevState) {
-    const { query, page } = this.state;
+  useEffect(() => {
+    if (searchQuery === '') return;
 
-    if (prevState.query !== query || prevState.page !== page) {
-      try {
-        this.setState({ status: 'load' });
-
-        const images = await API.getImages({ query, page });
-
-        if (images.totalHits === 0) {
-          this.setState({ status: 'notFound' });
+    try {
+      setStatus('load');
+      getImages({ query: searchQuery, page: currentPage }).then(response => {
+        if (response.totalHits === 0) {
+          setStatus('notFound');
           return notifyWarning(
-            `Sorry, nothing was found on request "${query}"`
+            `Sorry, nothing was found on request "${searchQuery}"`
           );
         }
 
-        this.setState(({ items }) => ({
-          items: [...items, ...images.hits],
-        }));
+        setImages(state => [...state, ...response.hits]);
 
-        // Скорее всего костыль,  потом пофиксить
-        setTimeout(() => {
-          console.log(this.state.items.length);
-          this.setState({
-            status:
-              images.totalHits > this.state.items.length
-                ? 'loadMore'
-                : 'noMore',
-          });
-        }, 10);
-      } catch (error) {
-        this.setState({ status: error.message });
-        return notifyWarning(error.message);
-      }
+        if (response.hits.length < 12 || response.total < 12) {
+          return setStatus('noMore');
+        }
+        setStatus('loadMore');
+      });
+    } catch (error) {
+      setStatus(error.message);
+      notifyWarning(error.message);
     }
-  }
+  }, [currentPage, searchQuery]);
 
-  handelSabmitForm = value => {
-    this.setState({ query: value, page: 1, items: [] });
+  const handelSubmitForm = value => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+    setImages([]);
   };
 
-  increasePage = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
+  const increasePage = () => {
+    setCurrentPage(page => page + 1);
   };
 
-  render() {
-    const { status } = this.state;
-    return (
-      <Container>
-        <Searchbar onSubmit={this.handelSabmitForm} />
-        <ImageGallery items={this.state.items} />
+  return (
+    <Container>
+      <Searchbar onSubmit={handelSubmitForm} />
+      <ImageGallery items={images} />
 
-        {(status === 'pending' && (
-          <Title>Let's find whatever you want !</Title>
-        )) ||
-          (status === 'notFound' && <Title>Try again !</Title>)}
+      {(status === 'pending' && (
+        <Title>Let's find whatever you want !</Title>
+      )) ||
+        (status === 'notFound' && <Title>Try again !</Title>)}
 
-        {status === 'load' && <Loader />}
-        {status === 'loadMore' && <Button onClick={this.increasePage} />}
+      {status === 'load' && <Loader />}
+      {status === 'loadMore' && <Button onClick={increasePage} />}
 
-        <NotificationContainer />
-      </Container>
-    );
-  }
-}
+      <NotificationContainer />
+    </Container>
+  );
+};
 
 export default App;
+// setStatus('load');
+// API.getImages({ query, page })
+// .then(response => {
+//     if (response.totalHits === 0) {
+//       setStatus('notFount');
+//       return notifyWarning(
+//         `Sorry, nothing was found on request "${query}"`
+//       );
+//     }
+
+//     setItems(state => [...state, ...response.hits]);
+//     setStatus(response.totalHits > items.length ? 'loadMore' : 'noNore');
+//   })
+//   .catch(error => {
+//     setStatus(error.message);
+//     return notifyWarning(error.message);
+//   });
