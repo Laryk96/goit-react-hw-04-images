@@ -1,38 +1,33 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 import { Backdrop, ModalBody } from './Modal.styled';
 
-class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+const Modal = ({ onClose, alt, image }) => {
+  const portal = document.getElementById('modal');
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+  useEffect(() => {
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        onClose();
+      }
+    };
 
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.onClose();
-    }
-  };
+    window.addEventListener('keydown', handleKeyDown);
 
-  render() {
-    const { onClose, image, alt } = this.props;
-    const portal = document.getElementById('modal');
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
-    return ReactDOM.createPortal(
-      <Backdrop onClick={onClose}>
-        <ModalBody>
-          <img src={image} alt={alt} />
-        </ModalBody>
-      </Backdrop>,
-      portal
-    );
-  }
-}
+  return ReactDOM.createPortal(
+    <Backdrop onClick={onClose}>
+      <ModalBody>
+        <img src={image} alt={alt} />
+      </ModalBody>
+    </Backdrop>,
+    portal
+  );
+};
 
 Modal.propTypes = {
   alt: PropTypes.string.isRequired,
@@ -41,3 +36,33 @@ Modal.propTypes = {
 };
 
 export default Modal;
+
+// class Modal extends Component {
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handleKeyDown);
+//   }
+
+//   handleKeyDown = e => {
+//     if (e.code === 'Escape') {
+//       this.props.onClose();
+//     }
+//   };
+
+//   render() {
+//     const { onClose, image, alt } = this.props;
+//     const portal = document.getElementById('modal');
+
+//     return ReactDOM.createPortal(
+//       <Backdrop onClick={onClose}>
+//         <ModalBody>
+//           <img src={image} alt={alt} />
+//         </ModalBody>
+//       </Backdrop>,
+//       portal
+//     );
+//   }
+// }

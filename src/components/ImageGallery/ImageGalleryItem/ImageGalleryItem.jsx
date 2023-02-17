@@ -1,36 +1,29 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Item, Image } from './ImageGalleryItem.styled';
 import Modal from 'components/Modal';
+import { useState } from 'react';
+import { Image, Item } from './ImageGalleryItem.styled';
 
-class ImageGalleryItem extends Component {
-  state = {
-    openModal: false,
+const ImageGalleryItem = ({ description, preview, original }) => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const open = () => {
+    setOpenModal(true);
   };
 
-  openModal = () => {
-    this.setState({ openModal: true });
+  const close = () => {
+    setOpenModal(false);
   };
 
-  closeModal = () => {
-    this.setState({ openModal: false });
-  };
-
-  render() {
-    const { description, preview, original } = this.props;
-    const { openModal } = this.state;
-
-    return (
-      <Item>
-        <Image src={preview} alt={description} onClick={this.openModal} />
-        {openModal && (
-          <Modal onClose={this.closeModal} alt={description} image={original} />
-        )}
-      </Item>
-    );
-  }
-}
+  return (
+    <Item>
+      <Image src={preview} alt={description} onClick={open} />
+      {openModal && (
+        <Modal onClose={close} alt={description} image={original} />
+      )}
+    </Item>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   description: PropTypes.string.isRequired,
@@ -39,3 +32,31 @@ ImageGalleryItem.propTypes = {
 };
 
 export default ImageGalleryItem;
+
+// class ImageGalleryItem extends Component {
+//   state = {
+//     openModal: false,
+//   };
+
+//   openModal = () => {
+//     this.setState({ openModal: true });
+//   };
+
+//   closeModal = () => {
+//     this.setState({ openModal: false });
+//   };
+
+//   render() {
+//     const { description, preview, original } = this.props;
+//     const { openModal } = this.state;
+
+//     return (
+//       <Item>
+//         <Image src={preview} alt={description} onClick={this.openModal} />
+//         {openModal && (
+//           <Modal onClose={this.closeModal} alt={description} image={original} />
+//         )}
+//       </Item>
+//     );
+//   }
+// }
