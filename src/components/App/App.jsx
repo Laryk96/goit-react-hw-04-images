@@ -70,20 +70,3 @@ const App = () => {
 };
 
 export default App;
-// setStatus('load');
-// API.getImages({ query, page })
-// .then(response => {
-//     if (response.totalHits === 0) {
-//       setStatus('notFount');
-//       return notifyWarning(
-//         `Sorry, nothing was found on request "${query}"`
-//       );
-//     }
-
-//     setItems(state => [...state, ...response.hits]);
-//     setStatus(response.totalHits > items.length ? 'loadMore' : 'noNore');
-//   })
-//   .catch(error => {
-//     setStatus(error.message);
-//     return notifyWarning(error.message);
-//   });
