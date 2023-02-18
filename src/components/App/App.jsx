@@ -41,7 +41,7 @@ const App = () => {
     }
   }, [currentPage, searchQuery]);
 
-  const handelSubmitForm = value => {
+  const handleSubmitForm = value => {
     setSearchQuery(value);
     setCurrentPage(1);
     setImages([]);
@@ -53,7 +53,7 @@ const App = () => {
 
   return (
     <Container>
-      <Searchbar onSubmit={handelSubmitForm} />
+      <Searchbar onSubmit={handleSubmitForm} />
       <ImageGallery items={images} />
 
       {(status === 'pending' && (
